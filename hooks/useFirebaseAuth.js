@@ -1,18 +1,20 @@
-import { useState, useEffect } from 'react';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import {useState, useEffect} from 'react';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
-
-GoogleSignin.configure({
-  webClientId: '1042699148368-m4j2rhstl62pdr7pl613uhiksme13110.apps.googleusercontent.com',
-  offlineAccess: true,
-});
+import env from 'react-native-config';
 
 function useFirebaseAuth() {
   const [user, setUser] = useState(null);
 
+  const {GOOGLE_CLIENT_ID} = env;
+  GoogleSignin.configure({
+    webClientId: GOOGLE_CLIENT_ID,
+    offlineAccess: true,
+  });
+
   useEffect(() => {
     // Check if a user is already logged in
-    const unsubscribe = auth().onAuthStateChanged((firebaseUser) => {
+    const unsubscribe = auth().onAuthStateChanged(firebaseUser => {
       if (firebaseUser) {
         setUser(firebaseUser);
       } else {
@@ -33,14 +35,28 @@ function useFirebaseAuth() {
       const userInfo = await GoogleSignin.signIn();
 
       if (userInfo?.data?.idToken) {
-        const googleCredential = auth.GoogleAuthProvider.credential(userInfo?.data?.idToken);
+        const googleCredential = auth.GoogleAuthProvider.credential(
+          userInfo?.data?.idToken,
+        );
         // Sign in to Firebase with the Google credential
-        const firebaseUser = await auth().signInWithCredential(googleCredential);
+        const firebaseUser = await auth().signInWithCredential(
+          googleCredential,
+        );
         setUser(firebaseUser);
         return firebaseUser;
       }
     } catch (error) {
       console.error('Google Sign-In Error:', error);
+      throw error;
+    }
+  }
+
+  async function signInWithEmailPassword() {
+    try {
+      const firebaseUser = auth().signInWithEmailAndPassword(email, password);
+      return firebaseUser;
+    } catch (error) {
+      console.error(error);
       throw error;
     }
   }
@@ -60,6 +76,7 @@ function useFirebaseAuth() {
   return {
     user,
     googleSignIn,
+    signInWithEmailPassword,
     signOut,
   };
 }
