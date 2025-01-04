@@ -2,9 +2,12 @@ import React from 'react';
 import {ImageBackground, Text, TextInput, TouchableOpacity} from 'react-native';
 import tw from 'twrnc';
 import useFirebaseAuth from '../../hooks/useFirebaseAuth';
+import useAppContext from '../../context';
 
 function Login({navigation}) {
   const {googleSignIn, signInWithEmailPassword} = useFirebaseAuth();
+
+  const {userApi} = useAppContext();
 
   async function onLoginPress() {
     try {
@@ -17,20 +20,32 @@ function Login({navigation}) {
     }
   }
 
-  async function onGoogleLoginPress() {
+  function onGoogleLoginPress() {
     try {
-      const user = await googleSignIn();
-      console.log(user);
-      if (user) {
-        navigation.replace('Home');
-      }
+      googleSignIn().then(function (result) {
+        if (result?.additionalUserInfo?.isNewUser) {
+          const userData = {
+            username: result?.additionalUserInfo?.profile.email,
+            email: result?.additionalUserInfo?.profile?.email,
+          };
+          userApi
+            .registerUser(userData)
+            .then(function (result) {
+              console.log('Register user successfully');
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        } else {
+          console.log('User already present');
+        }
+      });
     } catch (error) {
       console.error('Login Error:', error);
     }
   }
 
   function onNormalLoginPress() {
-    console.log('Normal Login');
     navigation.replace('Home');
   }
 

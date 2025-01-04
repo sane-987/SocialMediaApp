@@ -1,18 +1,45 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, View} from 'react-native';
+import {View, ActivityIndicator, StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import useFirebaseAuth from './hooks/useFirebaseAuth';
-import Login from './screens/auth/login';
 import Home from './screens/browse/home';
 import Search from './screens/browse/search';
+import UserProfile from './screens/browse/userProfile';
+import Login from './screens/auth/login';
+import BottomNavBar from './components/ui/navBar';
+import useAppContext from './context';
 
 const Stack = createStackNavigator();
 
-function App() {
-  const [loading, setLoading] = useState(true);
+function MainLayout({navigation}) {
+  const {user} = useAppContext();
 
-  const {user} = useFirebaseAuth();
+  return (
+    <View style={styles.container}>
+      {/* Main Content */}
+      <View style={styles.content}>
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+          {!user ? (
+            <Stack.Screen name="Login" component={Login} />
+          ) : (
+            <>
+              <Stack.Screen name="Home" component={Home} />
+              <Stack.Screen name="Search" component={Search} />
+              <Stack.Screen name="Profile" component={UserProfile} />
+            </>
+          )}
+        </Stack.Navigator>
+      </View>
+
+      {/* Persistent Bottom Navbar */}
+      {user ? <BottomNavBar navigation={navigation} /> : null}
+    </View>
+  );
+}
+
+export default function App() {
+  const [loading, setLoading] = useState(true);
+  const {user} = useAppContext();
 
   useEffect(() => {
     const timeout = setTimeout(() => setLoading(false), 500); // Simulate loading process
@@ -21,7 +48,7 @@ function App() {
 
   if (loading) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={styles.loading}>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
@@ -29,30 +56,22 @@ function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={user ? 'Home' : 'Login'}>
-        {!user ? (
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{headerShown: false}}
-          />
-        ) : (
-          <>
-            <Stack.Screen
-              name="Home"
-              component={Home}
-              options={{headerShown: false, title: 'Home'}}
-            />
-            <Stack.Screen
-              name="Search"
-              component={Search}
-              options={{headerShown: false, title: 'Home'}}
-            />
-          </>
-        )}
-      </Stack.Navigator>
+      <MainLayout />
     </NavigationContainer>
   );
 }
 
-export default App;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  content: {
+    flex: 1,
+    marginBottom: 0, // Reserve space for the bottom navbar
+  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
