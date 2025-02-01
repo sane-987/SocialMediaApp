@@ -29,6 +29,18 @@ function BottomNavBar() {
         <Text style={tw`text-white text-xs`}>Search</Text>
       </TouchableOpacity>
 
+      <TouchableOpacity
+        style={tw`items-center`}
+        onPress={() => handleNavigation('AskQuestion')}>
+        <Ionicons
+          name="add"
+          size={24}
+          color="white"
+          style={tw`bg-gray-300 rounded-full`}
+        />
+        <Text style={tw`text-white text-xs`}>Ask</Text>
+      </TouchableOpacity>
+
       {/* Profile Button */}
       <TouchableOpacity
         style={tw`items-center`}

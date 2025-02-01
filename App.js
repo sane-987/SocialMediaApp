@@ -8,6 +8,7 @@ import UserProfile from './screens/browse/userProfile';
 import Login from './screens/auth/login';
 import BottomNavBar from './components/ui/navBar';
 import useAppContext from './context';
+import AskQuestionScreen from './screens/community/askQuestion';
 
 const Stack = createStackNavigator();
 
@@ -26,6 +27,7 @@ function MainLayout({navigation}) {
               <Stack.Screen name="Home" component={Home} />
               <Stack.Screen name="Search" component={Search} />
               <Stack.Screen name="Profile" component={UserProfile} />
+              <Stack.Screen name="AskQuestion" component={AskQuestionScreen} />
             </>
           )}
         </Stack.Navigator>
@@ -67,7 +69,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    marginBottom: 0, // Reserve space for the bottom navbar
+    marginBottom: 60, // Reserve space for the bottom navbar
   },
   loading: {
     flex: 1,

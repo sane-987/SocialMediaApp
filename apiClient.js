@@ -14,6 +14,7 @@ apiClient.interceptors.request.use(async config => {
   const currentUser = auth().currentUser;
   if (currentUser) {
     const token = await currentUser?.getIdToken();
+    console.log(token);
     if (token) {
       config.headers['X-Authorization'] = `Bearer ${token}`;
     }

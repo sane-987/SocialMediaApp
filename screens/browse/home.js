@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
 import tw from 'twrnc';
 import useFirebaseAuth from '../../hooks/useFirebaseAuth';
@@ -7,9 +7,29 @@ import Feather from 'react-native-vector-icons/Feather';
 import CardComponent from '../../components/ui/cardComponent';
 import NavBar from '../../components/ui/navBar';
 import {Image} from 'react-native-reanimated/lib/typescript/Animated';
+import auth from '@react-native-firebase/auth';
+import useAppContext from '../../context';
 
 function Home({navigation}) {
   const {user, signOut} = useFirebaseAuth();
+
+  const {getUserGeoLocation, latitude, longitude} = useAppContext();
+
+  console.log(latitude, longitude, '#######');
+
+  function getIdToken() {
+    const currentUser = auth().currentUser;
+
+    if (currentUser) {
+      currentUser.getIdToken().then(function (result) {
+        console.log(result);
+      });
+    }
+  }
+
+  useEffect(function () {
+    getIdToken();
+  }, []);
 
   async function onLogoutPress() {
     try {

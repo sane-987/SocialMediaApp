@@ -5,6 +5,7 @@ import {
   addCommunityService,
   getUserIdService,
   registerUserService,
+  addQuestionService,
 } from '../services/userServices';
 
 export default function useApi() {
@@ -74,6 +75,18 @@ export default function useApi() {
     });
   }
 
+  function addQuestion(userId, requestBody) {
+    return new Promise(function (resolve, reject) {
+      addQuestionService(userId, requestBody)
+        .then(function (result) {
+          resolve(result);
+        })
+        .catch(function (error) {
+          reject(error);
+        });
+    });
+  }
+
   const carApi = {
     getCarDetails,
   };
@@ -87,5 +100,9 @@ export default function useApi() {
     getCommunities,
     addCommunity,
   };
-  return {userApi, carApi, communityApi};
+
+  const questionApi = {
+    addQuestion,
+  };
+  return {userApi, carApi, communityApi, questionApi};
 }

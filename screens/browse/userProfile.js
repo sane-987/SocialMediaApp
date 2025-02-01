@@ -14,13 +14,15 @@ import CardCommponent from '../../components/ui/cardComponent';
 function UserProfile({navigation}) {
   const {user, signOut} = useFirebaseAuth();
 
-  const {userApi, communityApi} = useAppContext();
+  const {userApi, communityApi, latitude, longitude} = useAppContext();
 
   const [communitiesData, setCommunitiesData] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showDropDown, setShowDropDown] = useState(false);
 
-  const categories = ['Posts', 'Stories', 'Liked', 'Tagged'];
+  const [view, setView] = useState('Questions');
+
+  const categories = ['Questions', 'My Communities', 'Liked', 'Tagged'];
 
   // useEffect(function () {
   //   userApi
@@ -97,66 +99,76 @@ function UserProfile({navigation}) {
             Writer by Profession. Artist by Passion!
           </Text>
         </View>
-
         <View style={tw`flex flex-row justify-between px-4`}>
           <BlockComponent number={'2,467'} text={'Followers'} />
           <BlockComponent number={'1,589'} text={'Following'} />
           <BlockComponent text={'Edit Profile'} />
         </View>
-
         <View style={tw``}>
           <CategoriesComponent
             parentComponent={'userProfile'}
             categories={categories}
             selectedCategory={selectedCategory}
             onSelectCategory={setSelectedCategory}
+            onSelectView={setView}
           />
         </View>
+        // User Questions
+        {view === 'Questions' && (
+          <View style={tw`p-5`}>
+            <CardCommponent
+              profileName="Jacob Washington"
+              timeAgo="20m ago"
+              content="If you think you are too small to make a try sleeping with a mosquito. ~ Dalai Lama"
+              likes={2225}
+              comments={45}
+              shares={120}
+              isImage={false}
+            />
 
-        <View style={tw`p-5`}>
-          <CardCommponent
-            profileName="Jacob Washington"
-            timeAgo="20m ago"
-            content="If you think you are too small to make a try sleeping with a mosquito. ~ Dalai Lama"
-            likes={2225}
-            comments={45}
-            shares={120}
-            isImage={false}
-          />
+            <CardCommponent
+              profileName="Kat Williams"
+              timeAgo="1h ago"
+              content={[
+                '../../assets/background.png',
+                '../../assets/background.png',
+                '../../assets/background.png',
+              ]} // Replace with your image URL
+              likes={8998}
+              comments={145}
+              shares={12}
+              isImage={true}
+            />
 
-          <CardCommponent
-            profileName="Kat Williams"
-            timeAgo="1h ago"
-            content={[
-              '../../assets/background.png',
-              '../../assets/background.png',
-              '../../assets/background.png',
-            ]} // Replace with your image URL
-            likes={8998}
-            comments={145}
-            shares={12}
-            isImage={true}
-          />
-
-          <CardCommponent
-            profileName="Kat Williams"
-            timeAgo="1h ago"
-            content={[
-              '../../assets/background.png',
-              '../../assets/background.png',
-              '../../assets/background.png',
-            ]} // Replace with your image URL
-            likes={8998}
-            comments={145}
-            shares={12}
-            isImage={true}
-          />
+            <CardCommponent
+              profileName="Kat Williams"
+              timeAgo="1h ago"
+              content={[
+                '../../assets/background.png',
+                '../../assets/background.png',
+                '../../assets/background.png',
+              ]} // Replace with your image URL
+              likes={8998}
+              comments={145}
+              shares={12}
+              isImage={true}
+            />
+          </View>
+        )}
+        {view === 'My Communities' && (
+          <View style={tw`p-5 gap-4`}>
+            <BlockComponent text={'Restraunts'} />
+            <BlockComponent text={'Books'} />
+            <BlockComponent text={'Movies'} />
+          </View>
+        )}
+        <View>
+          <TouchableOpacity
+            style={tw`m-4 bg-blue-500 py-3 px-6 rounded-full`}
+            onPress={onLogoutPress}>
+            <Text style={tw`text-white text-center`}>Log Out</Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          style={tw`m-4 bg-blue-500 py-3 px-6 rounded-full`}
-          onPress={onLogoutPress}>
-          <Text style={tw`text-white text-center`}>Log Out</Text>
-        </TouchableOpacity>
       </ScrollView>
       {/* <BottomNavBar navigation={navigation} /> */}
     </View>

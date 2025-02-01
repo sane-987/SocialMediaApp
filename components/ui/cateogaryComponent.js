@@ -7,6 +7,7 @@ export default function CategoriesComponent({
   selectedCategory,
   onSelectCategory,
   parentComponent,
+  onSelectView,
 }) {
   return (
     <ScrollView
@@ -16,7 +17,10 @@ export default function CategoriesComponent({
       {categories.map((category, index) => (
         <TouchableOpacity
           key={index}
-          onPress={() => onSelectCategory(category)}
+          onPress={() => {
+            onSelectCategory(category);
+            onSelectView(category);
+          }}
           style={tw`px-4 py-2 rounded-full border border-white ${
             selectedCategory === category && !parentComponent
               ? 'bg-white'

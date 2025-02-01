@@ -47,6 +47,22 @@ export function getUserIdService() {
   });
 }
 
+export function addQuestionService(userId, requestBody) {
+  return new Promise(function (resolve, reject) {
+    let url = `${API_BASE_URL}/question/addQuestion/${userId}`;
+
+    apiClient
+      .post(url, requestBody)
+      .then(function (result) {
+        resolve(result);
+      })
+      .catch(function (error) {
+        console.log(error, '$$$$');
+        reject(error);
+      });
+  });
+}
+
 export function registerUserService(userData) {
   return new Promise(function (resolve, reject) {
     let url = `${API_BASE_URL}/register`;
