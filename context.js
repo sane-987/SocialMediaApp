@@ -7,7 +7,7 @@ const Context = createContext(null);
 
 export const ContextProvider = ({children}) => {
   const {user} = useFirebaseAuth(); // Assuming useFirebaseAuth returns { user }
-  const {userApi, carApi, communityApi, questionApi} = useApi();
+  const {userApi, carApi, communityApi, questionApi, answerApi} = useApi();
 
   const {getUserGeoLocation, latitude, longitude} = useGeolocation();
 
@@ -17,6 +17,7 @@ export const ContextProvider = ({children}) => {
     carApi,
     communityApi,
     questionApi,
+    answerApi,
     getUserGeoLocation,
     latitude,
     longitude,

@@ -6,6 +6,8 @@ import {
   getUserIdService,
   registerUserService,
   addQuestionService,
+  getQuestionService,
+  getAnswerService,
 } from '../services/userServices';
 
 export default function useApi() {
@@ -87,6 +89,30 @@ export default function useApi() {
     });
   }
 
+  function getQuestion(userId) {
+    return new Promise(function (resolve, reject) {
+      getQuestionService(userId)
+        .then(function (result) {
+          resolve(result);
+        })
+        .catch(function (error) {
+          reject(error);
+        });
+    });
+  }
+
+  function getAnswer(questionId) {
+    return new Promise(function (resolve, reject) {
+      getAnswerService(questionId)
+        .then(function (result) {
+          resolve(result);
+        })
+        .catch(function (error) {
+          reject(error);
+        });
+    });
+  }
+
   const carApi = {
     getCarDetails,
   };
@@ -103,6 +129,11 @@ export default function useApi() {
 
   const questionApi = {
     addQuestion,
+    getQuestion,
   };
-  return {userApi, carApi, communityApi, questionApi};
+
+  const answerApi = {
+    getAnswer,
+  };
+  return {userApi, carApi, communityApi, questionApi, answerApi};
 }

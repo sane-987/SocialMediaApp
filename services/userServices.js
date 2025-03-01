@@ -41,7 +41,7 @@ export function getUserIdService() {
         resolve(result);
       })
       .catch(function (error) {
-        console.log(error, '####');
+        console.log(error, '###$');
         reject(error);
       });
   });
@@ -73,6 +73,38 @@ export function registerUserService(userData) {
         resolve(result);
       })
       .catch(function (error) {
+        reject(error);
+      });
+  });
+}
+
+export function getQuestionService(userId) {
+  return new Promise(function (resolve, reject) {
+    let url = `${API_BASE_URL}/question/getQuestion/${userId}`;
+    console.log(url);
+    apiClient
+      .get(url)
+      .then(function (result) {
+        resolve(result);
+      })
+      .catch(function (error) {
+        console.log(error, '##eeeeeeeee');
+        reject(error);
+      });
+  });
+}
+
+export function getAnswerService(questionId) {
+  return new Promise(function (resolve, reject) {
+    let url = `${API_BASE_URL}/answer/getAnswer/${questionId}`;
+    console.log(url);
+    apiClient
+      .get(url)
+      .then(function (result) {
+        resolve(result);
+      })
+      .catch(function (error) {
+        console.log(error, '###$$');
         reject(error);
       });
   });

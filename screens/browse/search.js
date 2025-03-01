@@ -7,17 +7,25 @@ import useAppContext from '../../context';
 import CarComponent from '../../components/ui/carComponent';
 import CardCommponent from '../../components/ui/cardComponent';
 import CategoriesComponent from '../../components/ui/cateogaryComponent';
+import QuestionComponent from '../../components/ui/questionComponent';
 
 function Search({navigation}) {
-  const {carApi} = useAppContext();
+  const {carApi, questionApi, answerApi, userApi} = useAppContext();
 
   const [carData, setCarData] = useState(null);
 
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [view, setView] = useState('All');
+
+  const [apiUserId, setApiUserId] = useState(null);
+
+  const [questions, setQuestions] = useState([]);
+  const [answer, setAnswer] = useState([]);
 
   const categories = [
     'All',
     'Profiles',
+    'Questions',
     'Posts',
     'Institutes',
     'Videos',
@@ -25,20 +33,54 @@ function Search({navigation}) {
     'Tags',
   ];
 
-  useEffect(function () {
-    carApi
-      .getCarDetails()
-      .then(function (result) {
-        setCarData(result);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }, []);
-
   function backButtonFunction() {
     navigation.replace('Home');
   }
+
+  useEffect(function () {
+    userApi.getUserId().then(function (result) {
+      console.log(result);
+      setApiUserId(result?.id);
+    });
+  });
+
+  useEffect(
+    function () {
+      if (apiUserId) {
+        questionApi.getQuestion(apiUserId).then(function (result) {
+          result?.map(function (question, key) {
+            const newQuestions = result.map(question => ({
+              id: question?.id,
+              question: question?.question,
+              answers: [], // ✅ Corrected initialization
+            }));
+
+            setQuestions(prevQuestions => [...prevQuestions, ...newQuestions]);
+          });
+        });
+      }
+    },
+    [apiUserId],
+  );
+
+  useEffect(
+    function () {
+      if (questions) {
+        questions.map(function (question) {
+          answerApi
+            .getAnswer(question?.id)
+            .then(function (result) {
+              questions['answers'].push(result);
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        });
+      }
+    },
+    [questions],
+  );
+
   return (
     <View style={tw`flex-1 bg-slate-900`}>
       {/* Header Section */}
@@ -62,77 +104,94 @@ function Search({navigation}) {
               categories={categories}
               selectedCategory={selectedCategory}
               onSelectCategory={setSelectedCategory}
+              onSelectView={setView}
             />
           </View>
-          <CardCommponent
-            profileName="Kat Williams"
-            timeAgo="1h ago"
-            content={[
-              '../../assets/background.png',
-              '../../assets/background.png',
-              '../../assets/background.png',
-            ]} // Replace with your image URL
-            likes={8998}
-            comments={145}
-            shares={12}
-            isImage={true}
-          />
 
-          <CardCommponent
-            profileName="Kat Williams"
-            timeAgo="1h ago"
-            content={[
-              '../../assets/background.png',
-              '../../assets/background.png',
-              '../../assets/background.png',
-            ]} // Replace with your image URL
-            likes={8998}
-            comments={145}
-            shares={12}
-            isImage={true}
-          />
+          {view == 'All' && (
+            <View>
+              <CardCommponent
+                profileName="Kat Williams"
+                timeAgo="1h ago"
+                content={[
+                  '../../assets/background.png',
+                  '../../assets/background.png',
+                  '../../assets/background.png',
+                ]} // Replace with your image URL
+                likes={8998}
+                comments={145}
+                shares={12}
+                isImage={true}
+              />
 
-          <CardCommponent
-            profileName="Kat Williams"
-            timeAgo="1h ago"
-            content={[
-              '../../assets/background.png',
-              '../../assets/background.png',
-              '../../assets/background.png',
-            ]} // Replace with your image URL
-            likes={8998}
-            comments={145}
-            shares={12}
-            isImage={true}
-          />
+              <CardCommponent
+                profileName="Kat Williams"
+                timeAgo="1h ago"
+                content={[
+                  '../../assets/background.png',
+                  '../../assets/background.png',
+                  '../../assets/background.png',
+                ]} // Replace with your image URL
+                likes={8998}
+                comments={145}
+                shares={12}
+                isImage={true}
+              />
 
-          <CardCommponent
-            profileName="Kat Williams"
-            timeAgo="1h ago"
-            content={[
-              '../../assets/background.png',
-              '../../assets/background.png',
-              '../../assets/background.png',
-            ]} // Replace with your image URL
-            likes={8998}
-            comments={145}
-            shares={12}
-            isImage={true}
-          />
+              <CardCommponent
+                profileName="Kat Williams"
+                timeAgo="1h ago"
+                content={[
+                  '../../assets/background.png',
+                  '../../assets/background.png',
+                  '../../assets/background.png',
+                ]} // Replace with your image URL
+                likes={8998}
+                comments={145}
+                shares={12}
+                isImage={true}
+              />
 
-          <CardCommponent
-            profileName="Kat Williams"
-            timeAgo="1h ago"
-            content={[
-              '../../assets/background.png',
-              '../../assets/background.png',
-              '../../assets/background.png',
-            ]} // Replace with your image URL
-            likes={8998}
-            comments={145}
-            shares={12}
-            isImage={true}
-          />
+              <CardCommponent
+                profileName="Kat Williams"
+                timeAgo="1h ago"
+                content={[
+                  '../../assets/background.png',
+                  '../../assets/background.png',
+                  '../../assets/background.png',
+                ]} // Replace with your image URL
+                likes={8998}
+                comments={145}
+                shares={12}
+                isImage={true}
+              />
+
+              <CardCommponent
+                profileName="Kat Williams"
+                timeAgo="1h ago"
+                content={[
+                  '../../assets/background.png',
+                  '../../assets/background.png',
+                  '../../assets/background.png',
+                ]} // Replace with your image URL
+                likes={8998}
+                comments={145}
+                shares={12}
+                isImage={true}
+              />
+            </View>
+          )}
+          {view === 'Questions' && (
+            <View>
+              {
+                <QuestionComponent
+                  key={key}
+                  question={questionsdd}
+                  // answers={}
+                />
+              }
+            </View>
+          )}
         </View>
       </ScrollView>
 
